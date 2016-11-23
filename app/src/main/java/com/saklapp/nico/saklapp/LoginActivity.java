@@ -1,6 +1,5 @@
 package com.saklapp.nico.saklapp;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button btnLogin, btnAnon;
     EditText etEmail, etPassword;
     TextInputLayout tilEmail, tilPassword;
-    ProgressDialog pd;
+    ProgressBar progress;
 
 
     @Override
@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         etPassword = (EditText) findViewById(R.id.edit_password);
         tilEmail = (TextInputLayout) findViewById(R.id.til_email);
         tilPassword = (TextInputLayout) findViewById(R.id.til_password);
+        progress = (ProgressBar) findViewById(R.id.progressBar);
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -116,12 +117,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                        pd.dismiss();
+                        progress.setVisibility(View.GONE);
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            pd.dismiss();
+                            progress.setVisibility(View.GONE);
                             Toast.makeText(LoginActivity.this, "Username or Password Incorrect", Toast.LENGTH_SHORT).show();
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                         }
@@ -152,12 +153,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                pd = new ProgressDialog(LoginActivity.this);
-                pd.setMessage("loading");
-                pd.show();
+                progress.setVisibility(View.VISIBLE);
                 signInEmailPassword(etEmail.getText().toString(), etPassword.getText().toString());
                 break;
             case R.id.btn_anon:
+                progress.setVisibility(View.VISIBLE);
                 signInAnonymously();
                 break;
         }
@@ -172,8 +172,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (!isValidEmail(etEmail.getText().toString())) {
             etEmail.setError("Enter a valid address");
             btnLogin.setEnabled(false);
-        }
-        else if (TextUtils.isEmpty(String.valueOf(etPassword.getText()))) {
+        } else if (TextUtils.isEmpty(String.valueOf(etPassword.getText()))) {
             etPassword.setError("Enter password");
             btnLogin.setEnabled(false);
         } else {
