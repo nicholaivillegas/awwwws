@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "249722397730",
+    "firebase_url": "https://saklapp-d6ae0.firebaseio.com",
+    "project_id": "saklapp-d6ae0",
+    "storage_bucket": "saklapp-d6ae0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249722397730:android:12b3b55cb3157bf5",
+        "android_client_info": {
+          "package_name": "com.saklapp.nico.saklapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249722397730-95aj3bomhiufh32665c5oh50rdaal69e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saklapp.nico.saklapp",
+            "certificate_hash": "4036963D2C53FEFD5ADB5ED6A5C0F16EDA81EF08"
+          }
+        },
+        {
+          "client_id": "249722397730-aqgfb72pmlrb57ru7nfui3qd1k9006i7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAePeMoQfLzMajUv-66ULchFo5mgDbYXs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249722397730-aqgfb72pmlrb57ru7nfui3qd1k9006i7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
