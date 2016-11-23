@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "LOGIN: ";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    Button btnLogin;
+    Button btnLogin, btnAnon;
     EditText etEmail, etPassword;
     TextInputLayout tilEmail, tilPassword;
     ProgressDialog pd;
@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         btnLogin = (Button) findViewById(R.id.btn_login);
+        btnAnon = (Button) findViewById(R.id.btn_anon);
         etEmail = (EditText) findViewById(R.id.edit_email);
         etPassword = (EditText) findViewById(R.id.edit_password);
         tilEmail = (TextInputLayout) findViewById(R.id.til_email);
@@ -73,12 +74,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!isValidEmail(etEmail.getText().toString())) {
-                    etEmail.setError("Enter a valid address");
-                    btnLogin.setEnabled(false);
-                } else {
-                    btnLogin.setEnabled(true);
-                }
+                checkFields();
             }
         });
 
@@ -93,15 +89,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (TextUtils.isEmpty(String.valueOf(etPassword.getText()))) {
-                    etPassword.setError("Enter password");
-                    btnLogin.setEnabled(false);
-                } else {
-                    btnLogin.setEnabled(true);
-                }
+                checkFields();
             }
         });
         btnLogin.setOnClickListener(this);
+        btnAnon.setOnClickListener(this);
     }
 
     @Override
@@ -165,6 +157,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 pd.show();
                 signInEmailPassword(etEmail.getText().toString(), etPassword.getText().toString());
                 break;
+            case R.id.btn_anon:
+                signInAnonymously();
+                break;
         }
     }
 
@@ -173,19 +168,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //android Regex to check the email address Validation
     }
 
-//    public boolean isCompleteFields() {
-//        if (TextUtils.isEmpty(String.valueOf(etEmail.getText()))) {
-//            tilEmail.setErrorEnabled(true);
-//            tilEmail.setError("Please enter your Email");
-//            return false;
-//        } else {
-//            if (TextUtils.isEmpty(String.valueOf(etPassword.getText()))) {
-//                tilPassword.setErrorEnabled(true);
-//                tilPassword.setError("Please enter your Password");
-//                return false;
-//            } else {
-//                return true;
-//            }
-//        }
-//    }
+    public void checkFields() {
+        if (!isValidEmail(etEmail.getText().toString())) {
+            etEmail.setError("Enter a valid address");
+            btnLogin.setEnabled(false);
+        }
+        else if (TextUtils.isEmpty(String.valueOf(etPassword.getText()))) {
+            etPassword.setError("Enter password");
+            btnLogin.setEnabled(false);
+        } else {
+            btnLogin.setEnabled(true);
+        }
+    }
 }
+
+
