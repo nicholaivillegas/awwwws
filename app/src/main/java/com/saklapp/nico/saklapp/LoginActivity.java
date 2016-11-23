@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "LOGIN: ";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    Button btnLogin, btnAnon;
+    Button btnLogin, btnAnon, btnForgot, btnSignUp;
     EditText etEmail, etPassword;
     TextInputLayout tilEmail, tilPassword;
     ProgressBar progress;
@@ -39,6 +39,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnAnon = (Button) findViewById(R.id.btn_anon);
+        btnForgot = (Button) findViewById(R.id.btn_reset_password);
+        btnSignUp = (Button) findViewById(R.id.btn_signup);
         etEmail = (EditText) findViewById(R.id.edit_email);
         etPassword = (EditText) findViewById(R.id.edit_password);
         tilEmail = (TextInputLayout) findViewById(R.id.til_email);
@@ -95,6 +97,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
         btnLogin.setOnClickListener(this);
         btnAnon.setOnClickListener(this);
+        btnForgot.setOnClickListener(this);
+        btnSignUp.setOnClickListener(this);
     }
 
     @Override
@@ -149,6 +153,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
+
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -159,6 +165,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btn_anon:
                 progress.setVisibility(View.VISIBLE);
                 signInAnonymously();
+                break;
+            case R.id.btn_reset_password:
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+                break;
+            case R.id.btn_signup:
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
                 break;
         }
     }
