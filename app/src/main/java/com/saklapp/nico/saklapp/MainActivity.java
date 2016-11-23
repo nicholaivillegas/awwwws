@@ -1,5 +1,6 @@
 package com.saklapp.nico.saklapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.button_logout:
                 FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 Log.d(TAG, "LOGOUT");
                 break;
         }
