@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
-                    if (user.isEmailVerified()) {
+                    if (user.isEmailVerified() || (user.isAnonymous())) {
                         // User is signed in
                         Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
@@ -63,6 +63,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         finish();
                     } else {
                         Toast.makeText(LoginActivity.this, "Please Verify Account.", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(i);
+                        finish();
                         verifyEmail();
                     }
 
