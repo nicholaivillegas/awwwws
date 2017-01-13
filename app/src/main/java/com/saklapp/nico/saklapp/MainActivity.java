@@ -6,8 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,32 +21,47 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "";
-    Button btnLogout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btnLogout = (Button) findViewById(R.id.button_logout);
-        btnLogout.setOnClickListener(this);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
         String strEmail;
-        if(TextUtils.isEmpty(user.getEmail())) strEmail = "Anonymous";
-        else strEmail= user.getEmail();
+        if (TextUtils.isEmpty(user.getEmail())) strEmail = "Anonymous";
+        else strEmail = user.getEmail();
         Toast.makeText(this, strEmail, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_logout:
-                FirebaseAuth.getInstance().signOut();
-                finish();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                Log.d(TAG, "LOGOUT");
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_logout);
+        menuItem.setIcon(R.drawable.ic_exit_to_app_white_24dp);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                signOut();
                 break;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+    }
+
+    public void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        finish();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        Log.d(TAG, "LOGOUT");
     }
 }
