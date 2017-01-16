@@ -47,10 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //region FIREBASE AUTH
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
-        String strEmail;
-        if (TextUtils.isEmpty(user.getEmail())) strEmail = "Anonymous";
-        else strEmail = user.getEmail();
-        Toast.makeText(this, strEmail, Toast.LENGTH_SHORT).show();
+        String strName;
+        if (TextUtils.isEmpty(user.getDisplayName())) strName = "Anonymous";
+        else strName = user.getEmail();
+        Toast.makeText(this, "Welcome, " + strName, Toast.LENGTH_SHORT).show();
         //endregion
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1);
@@ -99,9 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 // Set the child's data to the value passed in from the text box.
                 if (user.getEmail() != null) {
-                    childRef.setValue("Email: " + user.getEmail() + " " + formattedDate + "\n" + text.getText().toString());
+                    childRef.setValue(user.getDisplayName() + " " + formattedDate + "\n" + text.getText().toString());
                 } else {
-                    childRef.setValue("Email: Anonymous" + " " + formattedDate + "\n" + text.getText().toString());
+                    childRef.setValue("Anonymous" + " " + formattedDate + "\n" + text.getText().toString());
                 }
                 text.setText("");
             }

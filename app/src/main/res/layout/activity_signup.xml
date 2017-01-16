@@ -23,20 +23,20 @@
             android:contentDescription="@string/app_name"
             android:src="@mipmap/ic_launcher" />
 
-        <!--<android.support.design.widget.TextInputLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <!--<EditText-->
-                <!--android:id="@+id/edit_name"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:hint="@string/name"-->
-                <!--android:inputType="textCapWords"-->
-                <!--android:maxLines="1"-->
-                <!--android:textColor="@android:color/white" />-->
+            <EditText
+                android:id="@+id/edit_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                android:inputType="textCapWords"
+                android:maxLines="1"
+                android:textColor="@android:color/white" />
 
-        <!--</android.support.design.widget.TextInputLayout>-->
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
