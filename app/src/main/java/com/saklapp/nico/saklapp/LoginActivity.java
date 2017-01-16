@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
                 if (user != null) {
-                    if (user.isEmailVerified()) {
+                    if (user.isEmailVerified() || user.isAnonymous()) {
                         // User is signed in
                         Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
