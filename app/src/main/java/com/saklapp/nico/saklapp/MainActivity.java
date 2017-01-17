@@ -1,20 +1,18 @@
 package com.saklapp.nico.saklapp;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,11 +22,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import com.saklapp.nico.saklapp.Adapters.RecyclerViewAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Nico on 11/23/2016.
@@ -37,104 +36,112 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "";
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private RecyclerViewAdapter recyclerViewAdapter;
+    private EditText editMessage;
+    private DatabaseReference databaseReference;
+    private List<Message> allMessage;
+    private String strName;
+    private String formattedDate;
+    private String enteredMessage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final ListView listView = (ListView) findViewById(R.id.listView);
 
         //region FIREBASE AUTH
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
-        String strName;
         if (TextUtils.isEmpty(user.getDisplayName())) strName = "Anonymous";
-        else strName = user.getEmail();
+        else strName = user.getDisplayName();
         Toast.makeText(this, "Welcome, " + strName, Toast.LENGTH_SHORT).show();
         //endregion
-        final ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1);
-        listView.setAdapter(adapter);
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("todoItems");
-        final MediaPlayer mp = MediaPlayer.create(this, R.raw.a);
 
-        myRef.addChildEventListener(new ChildEventListener() {
+        allMessage = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        editMessage = (EditText) findViewById(R.id.edit_message);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        ImageButton buttonSend = (ImageButton) findViewById(R.id.button_send);
+        buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                String value = dataSnapshot.getValue(String.class);
-                adapter.add(value);
-                mp.start();
-            }
-
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                adapter.remove(value);
-            }
-
-            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            }
-
-            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w("TAG:", "Failed to read value.", error.toException());
-            }
-        });
-
-        // Add items via the Button and EditText at the bottom of the window.
-        final EditText text = (EditText) findViewById(R.id.todoText);
-        final ImageButton button = (ImageButton) findViewById(R.id.addButton);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                // Create a new child with a auto-generated ID.
-                DatabaseReference childRef = myRef.push();
+            public void onClick(View view) {
+                enteredMessage = editMessage.getText().toString();
+                if (TextUtils.isEmpty(enteredMessage)) {
+                    Toast.makeText(MainActivity.this, "You must enter a message first", Toast.LENGTH_LONG).show();
+                    return;
+                }
+//                if (enteredTask.length() < 6) {
+//                    Toast.makeText(MainActivity.this, "Message count must be more than 6", Toast.LENGTH_LONG).show();
+//                    return;
+//                }
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-                String formattedDate = df.format(c.getTime());
-
-                // Set the child's data to the value passed in from the text box.
-                if (user.getEmail() != null) {
-                    childRef.setValue(user.getDisplayName() + " " + formattedDate + "\n" + text.getText().toString());
-                } else {
-                    childRef.setValue("Anonymous" + " " + formattedDate + "\n" + text.getText().toString());
-                }
-                text.setText("");
+                formattedDate = df.format(c.getTime());
+                Message messageObject = new Message(strName, formattedDate, enteredMessage, "0");
+                databaseReference.push().setValue(messageObject);
+                editMessage.setText("");
             }
         });
-
-        // Delete items when clicked
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-
-                Query myQuery = myRef.orderByValue().equalTo((String)
-                        listView.getItemAtPosition(position));
-
-                myQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.hasChildren()) {
-                            DataSnapshot firstChild = dataSnapshot.getChildren().iterator().next();
-                            firstChild.getRef().removeValue();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                })
-                ;
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                getAllStatus(dataSnapshot);
             }
-        })
-        ;
-        //endregion
 
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                getAllStatus(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                statusDeletion(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void getAllStatus(DataSnapshot dataSnapshot) {
+//        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+//            String chatTitle = singleSnapshot.getValue(String.class);
+//            allMessage.add(new Message(strName, formattedDate, chatTitle, "0"));
+//            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
+//            recyclerView.setAdapter(recyclerViewAdapter);
+//        }
+//        for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
+            Message message = dataSnapshot.getValue(Message.class);
+            allMessage.add(new Message(message.getName(), message.getTime(), message.getMessage(), message.getLike()));
+            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
+            recyclerView.setAdapter(recyclerViewAdapter);
+//        }
+
+
+    }
+
+    private void statusDeletion(DataSnapshot dataSnapshot) {
+        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+            String taskTitle = singleSnapshot.getValue(String.class);
+            for (int i = 0; i < allMessage.size(); i++) {
+                if (allMessage.get(i).getMessage().equals(taskTitle)) {
+                    allMessage.remove(i);
+                }
+            }
+            Log.d(TAG, "Message tile " + taskTitle);
+            recyclerViewAdapter.notifyDataSetChanged();
+            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
+            recyclerView.setAdapter(recyclerViewAdapter);
+        }
     }
 
     @Override
