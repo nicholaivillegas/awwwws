@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Nico on 11/23/2016.
@@ -79,9 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    return;
 //                }
                 Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
                 formattedDate = df.format(c.getTime());
-                Message messageObject = new Message(strName, formattedDate, enteredMessage, "0");
+                Message messageObject = new Message(strName, formattedDate, enteredMessage, "0", "yes");
                 databaseReference.push().setValue(messageObject);
                 editMessage.setText("");
             }
@@ -113,19 +114,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void getAllStatus(DataSnapshot dataSnapshot) {
-//        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//            String chatTitle = singleSnapshot.getValue(String.class);
-//            allMessage.add(new Message(strName, formattedDate, chatTitle, "0"));
-//            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
-//            recyclerView.setAdapter(recyclerViewAdapter);
-//        }
-//        for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
-            Message message = dataSnapshot.getValue(Message.class);
-            allMessage.add(new Message(message.getName(), message.getTime(), message.getMessage(), message.getLike()));
-            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
-            recyclerView.setAdapter(recyclerViewAdapter);
-//        }
-
+        Message message = dataSnapshot.getValue(Message.class);
+        allMessage.add(new Message(message.getName(), message.getTime(), message.getMessage(), message.getLike(), message.getLikeable()));
+        recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
+        recyclerView.setAdapter(recyclerViewAdapter);
 
     }
 
@@ -142,15 +134,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
             recyclerView.setAdapter(recyclerViewAdapter);
         }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         MenuItem menuItem = menu.findItem(R.id.action_logout);
         menuItem.setIcon(R.drawable.ic_exit_to_app_white_24dp);
-
         return true;
     }
 
