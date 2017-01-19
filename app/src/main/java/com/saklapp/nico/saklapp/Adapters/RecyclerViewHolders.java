@@ -35,7 +35,7 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder {
         textDate = (TextView) itemView.findViewById(R.id.text_date);
         textStatus = (TextView) itemView.findViewById(R.id.text_status);
         textLike = (TextView) itemView.findViewById(R.id.text_like);
-        buttonDelete = (Button) itemView.findViewById(R.id.button_delete);
+        buttonDelete = (Button) itemView.findViewById(R.id.button_like);
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
