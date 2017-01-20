@@ -70,7 +70,7 @@
             android:background="@color/colorPrimaryDark" />
 
         <Button
-            android:id="@+id/button_like"
+            android:id="@+id/button_relate"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_alignParentLeft="true"

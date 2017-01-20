@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                getAllStatus(dataSnapshot);
+                updateStatus(dataSnapshot);
+                recyclerViewAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -118,8 +119,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         allMessage.add(new Message(message.getName(), message.getTime(), message.getMessage(), message.getLike(), message.getLikeable()));
         recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allMessage);
         recyclerView.setAdapter(recyclerViewAdapter);
-
     }
+
+    private void updateStatus(DataSnapshot dataSnapshot) {
+        Message message = dataSnapshot.getValue(Message.class);
+        recyclerViewAdapter.onUpdate(message, dataSnapshot);
+    }
+
 
     private void statusDeletion(DataSnapshot dataSnapshot) {
         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {

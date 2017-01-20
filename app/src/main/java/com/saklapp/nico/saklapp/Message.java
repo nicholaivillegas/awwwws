@@ -42,4 +42,24 @@ public class Message {
     public String getMessage() {
         return message;
     }
+
+    public void setLike(String like) {
+        this.like = like;
+    }
+
+    public void setLikeable(String likeable) {
+        this.likeable = likeable;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }
