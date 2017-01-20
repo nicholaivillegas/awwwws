@@ -28,8 +28,7 @@ import static android.content.ContentValues.TAG;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
     private List<Message> message;
     protected Context context;
-    RecyclerViewHolders recyclerViewHolder;
-    Message temp;
+    private Message temp;
 
     public RecyclerViewAdapter(Context context, List<Message> message) {
         this.message = message;
@@ -47,7 +46,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, final int position) {
         temp = message.get(position);
-        recyclerViewHolder = holder;
         holder.textName.setText(message.get(position).getName());
         holder.textDate.setText(message.get(position).getTime());
         holder.textStatus.setText(message.get(position).getMessage());
