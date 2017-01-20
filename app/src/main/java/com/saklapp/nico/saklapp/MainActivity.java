@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String formattedDate;
     private String enteredMessage;
 
+    //TODO: Multiple liking error please fix bug
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
