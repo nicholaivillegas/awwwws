@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 updateStatus(dataSnapshot);
+
                 recyclerViewAdapter.notifyDataSetChanged();
             }
 
